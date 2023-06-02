@@ -30,37 +30,58 @@
       </div>
 
       <div class="date-box">
-        <div class="date">Thursday 1 June 2023</div>
+        <div class="date">{{getDate}}</div>
       </div>
 
       <div class="temperature-box">
-        <div class="temperature">{{ weather.main.temp }}°C</div>
-        <div class="weather">{{ weather.weather[0].main }}</div>
+         <div class="weather-icon">
+            <img class="icon" :src="imgSrc" >
+        </div>
+        <div class="temperature" >{{ weather.main.temp }}°C</div>
+        <div class="date-box">Humidity  {{weather.main.humidity}}%</div>
+         
+        <div class="weather">{{ weather.weather[0].main }}
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue';
+import { useGetIcon } from '../composables/weatherIcon.js';
 
 const apiKey = ref("35a118740e49bd6a50544377cff56a4e");
 const cityName = ref("");
 const weather = ref([]);
 const error = ref("");
 
+let imgSrc = ref('');
+
+let getDate = Date();
+getDate = getDate.split('(')[0];
+
 const getData = async () => {
   try {
+    console.log("Image Src",imgSrc.value);
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${cityName.value}&appid=${apiKey.value}&units=metric`
     );
-    weather.value = await response.json();
+    const weatherDetails =  await response.json();
+    weather.value = weatherDetails;
+    let { imageAddress } = useGetIcon(weatherDetails.weather[0].main);
+    imgSrc.value = imageAddress.value;
+
+    console.log("Hiiiiiii",imageAddress.value);
   } catch (err) {
     error.value = err;
   }
 
+  
   cityName.value = "";
 };
+
+
 </script>
 
 <style scoped>
@@ -131,7 +152,7 @@ const getData = async () => {
   font-weight: 900;
   text-shadow: 5px 5px 5px #000000;
   padding: 10px 15px;
-  margin-top: 45px;
+  margin-top: 30px;
   background-color: rgba(253, 236, 236, 0.432);
   border-radius: 25px 6px 25px 6px;
 }
@@ -143,5 +164,12 @@ const getData = async () => {
   padding-top: 16px;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   text-shadow: 5px 5px 5px #000000;
+}
+
+.icon {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 15%; 
 }
 </style>
