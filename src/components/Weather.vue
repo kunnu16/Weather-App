@@ -8,7 +8,7 @@
     <div class="search-box">
       <input
         type="text"
-        placeholder="Search Weather ..."
+        placeholder="Please enter the city name ..."
         class="search-bar"
         v-model.trim="cityName"
       />
@@ -34,11 +34,12 @@
       </div>
 
       <div class="temperature-box">
-         <div class="weather-icon">
-            <img class="icon" :src="imgSrc" >
-        </div>
+        
         <div class="temperature" >{{ weather.main.temp }}°C</div>
         <div class="date-box">Humidity  {{weather.main.humidity}}%</div>
+         <div class="weather-icon">
+            <img class="icon" :src="imageURL">
+        </div>
          
         <div class="weather">{{ weather.weather[0].main }}
         </div>
@@ -50,35 +51,44 @@
 <script setup>
 import { ref } from 'vue';
 import { useGetIcon } from '../composables/weatherIcon.js';
+import { useToast } from 'vue-toast-notification';
+import '../.././node_modules/vue-toast-notification/dist/theme-sugar.css';
 
 const apiKey = ref("35a118740e49bd6a50544377cff56a4e");
 const cityName = ref("");
 const weather = ref([]);
 const error = ref("");
 
-let imgSrc = ref('');
+let imageURL = ref('');
 
 let getDate = Date();
 getDate = getDate.split('(')[0];
 
 const getData = async () => {
   try {
-    console.log("Image Src",imgSrc.value);
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${cityName.value}&appid=${apiKey.value}&units=metric`
     );
-    const weatherDetails =  await response.json();
-    weather.value = weatherDetails;
-    let { imageAddress } = useGetIcon(weatherDetails.weather[0].main);
-    imgSrc.value = imageAddress.value;
 
-    console.log("Hiiiiiii",imageAddress.value);
+    weather.value = await response.json();
+    const  imageAddress  = useGetIcon(weather.value.weather[0].main);
+    imageURL.value = imageAddress;
+   
+   const toast = useToast();
+      toast.success('Api Fetched Successfully', {
+        duration: 2000 // Specify the duration to show the toast
+      });
+
   } catch (err) {
     error.value = err;
+    const toast = useToast();
+      toast.error(err, {
+        duration: 2000 // Specify the duration to show the toast
+      });
   }
 
-  
   cityName.value = "";
+  error.value="";
 };
 
 
@@ -91,11 +101,12 @@ const getData = async () => {
   width: 100%;
   background-size: cover;
   text-align: center;
+  
 }
 
 * {
-  margin: 0;
-  padding: 0;
+  margin: 0px ;
+  padding: 0px;
 }
 
 .bg-image {
@@ -152,7 +163,7 @@ const getData = async () => {
   font-weight: 900;
   text-shadow: 5px 5px 5px #000000;
   padding: 10px 15px;
-  margin-top: 30px;
+  margin-top: 55px;
   background-color: rgba(253, 236, 236, 0.432);
   border-radius: 25px 6px 25px 6px;
 }
@@ -161,7 +172,7 @@ const getData = async () => {
   color: white;
   text-align: center;
   font-size: 35px;
-  padding-top: 16px;
+  padding-top: 0px;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   text-shadow: 5px 5px 5px #000000;
 }
@@ -170,6 +181,8 @@ const getData = async () => {
   display: block;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 5px;
+  padding-top: 10px;
   width: 15%; 
 }
 </style>
