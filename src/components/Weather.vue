@@ -10,6 +10,163 @@
         type="text"
         placeholder="Please enter the city name ..."
         class="search-bar"
+        v-model.trim="$store.state.cityName"
+      />
+      <button
+        v-bind:disabled="$store.state.cityName.length === 0"
+        @click="$store.dispatch('getData')"
+        class="btn1"
+      >
+        Search
+      </button>
+    </div>
+
+    <div v-if="$store.state.error">
+      <h1>{{ $store.state.error }}</h1>
+    </div>
+    <div class="weather-box" v-else-if="$store.state.weather.length !== 0">
+      <div class="location-box">
+        <div class="location">{{ $store.state.weather.name }}</div>
+      </div>
+
+      <div class="date-box">
+        <div class="date">{{$store.state.getDate}}</div>
+      </div>
+
+      <div class="temperature-box">
+        
+        <div class="temperature" >{{ $store.state.weather.main.temp }}°C</div>
+        <div class="date-box">Humidity  {{$store.state.weather.main.humidity}}%</div>
+         <div class="weather-icon">
+            <img class="icon" :src="$store.state.imageURL">
+        </div>
+        <div class="weather">{{ $store.state.weather.weather[0].main }}
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+</script>
+
+<style scoped>
+#app {
+  height: 100vh;
+  background-repeat: no-repeat;
+  width: 100%;
+  background-size: cover;
+  text-align: center;
+  
+}
+
+* {
+  margin: 0px ;
+  padding: 0px;
+}
+
+.search-bar {
+  margin: 60px;
+  padding: 10px;
+  width: 45%;
+  font-size: 20px;
+  color: dimgrey;
+  font-family: sans-serif;
+  box-shadow: 10px 10px 5px rgb(73, 77, 78);
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.btn1 {
+  font-size: 20px;
+  padding: 10px;
+  box-shadow: 10px 10px 5px rgb(73, 77, 78);
+  border-radius: 6px;
+  text-shadow: 0px 0px 1px #494848;
+}
+
+.location-box {
+  color: white;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 40px;
+  text-align: center;
+  font-weight: 900;
+  text-shadow: 5px 5px 5px #000000;
+}
+
+.date-box {
+  color: white;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-size: 25px;
+  text-align: center;
+  padding-top: 16px;
+  font-style: oblique;
+  text-shadow: 5px 5px 5px #000000;
+}
+
+.temperature {
+  display: inline-block;
+  color: white;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 85px;
+  text-align: right;
+  font-weight: 900;
+  text-shadow: 5px 5px 5px #000000;
+  padding: 10px 15px;
+  margin-top: 55px;
+  background-color: rgba(253, 236, 236, 0.432);
+  border-radius: 25px 6px 25px 6px;
+}
+
+.weather {
+  color: white;
+  text-align: center;
+  font-size: 35px;
+  padding-top: 0px;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  text-shadow: 5px 5px 5px #000000;
+}
+
+.icon {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 5px;
+  padding-top: 10px;
+  width: 15%; 
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ----------------------------------------------------------------------------------
+<template>
+  <div
+    id="app"
+    :style="{
+      backgroundImage: 'url(https://wallpaperaccess.com/full/5466409.jpg)',
+    }"
+  >
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Please enter the city name ..."
+        class="search-bar"
         v-model.trim="cityName"
       />
       <button
@@ -185,4 +342,4 @@ const getData = async () => {
   padding-top: 10px;
   width: 15%; 
 }
-</style>
+</style> -->

@@ -5,7 +5,11 @@ import App from './App.vue'
 
 import VueToast from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
+import store from './store';
+import router from './router';
 
 const app = createApp(App);
-app.mount('#app');
+app.use(store);
+app.use(router);
 app.use(VueToast)
+app.mount('#app');
